@@ -135,3 +135,77 @@ He5.downloadTableAsCSV = function(tableId, filename = "he5jstabletocsv", neglect
     document.body.removeChild(link); // Clean up link element
     window.URL.revokeObjectURL(link.href); // Release the object URL
 };
+
+///notification handling
+
+const styles = `
+    .notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        opacity: 1;
+        transition: opacity 0.5s ease;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+    }
+    .success {
+        background: #4CAF50;
+        color: #fff;
+    }
+    .error {
+        background: #f44336;
+        color: #fff;
+    }
+    .warning {
+        background: #ff9800;
+        color: #fff;
+    }
+    .fade-out {
+        opacity: 0;
+    }
+    .close-btn {
+        margin-left: 10px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+`;
+
+const styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerText = styles;
+document.head.appendChild(styleSheet);
+
+
+He5.sendNotification = function(message, type = 'success', duration = 3000) {
+    // Create notification div
+    const notification = document.createElement("div");
+    notification.classList.add("notification", type);
+    notification.innerText = message;
+
+    // Create close button
+    const closeButton = document.createElement("button");
+    closeButton.innerHTML = "&times;";
+    closeButton.classList.add("close-btn");
+    closeButton.onclick = () => notification.remove();
+
+    notification.appendChild(closeButton);
+
+    // Append to body
+    document.body.appendChild(notification);
+
+    // Auto-remove after duration
+    setTimeout(() => {
+       notification.classList.add("fade-out");
+       setTimeout(() => {
+           notification.remove();
+       }, 500); // Fade-out duration
+    }, duration);
+}
+
